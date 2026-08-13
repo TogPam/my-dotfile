@@ -1,0 +1,123 @@
+#############################################
+# Theme
+#############################################
+
+include themes/mocha.conf
+#############################################
+# Font
+#############################################
+
+font_family      "JetBrains Mono"
+bold_font        auto
+italic_font      auto
+bold_italic_font auto
+
+font_size 13
+
+#############################################
+# Cursor
+#############################################
+
+cursor_shape beam
+cursor_beam_thickness 1.8
+cursor_blink_interval 0
+
+cursor_trail 200
+cursor_trail_decay 0.1 0.4
+cursor_trail_start_threshold 2
+
+#############################################
+# Window
+#############################################
+
+remember_window_size yes
+initial_window_width 120c
+initial_window_height 35c
+
+window_padding_width 8
+
+background_opacity 0.96
+background_blur 1
+
+#############################################
+# Performance
+#############################################
+
+repaint_delay 8
+input_delay 0
+sync_to_monitor yes
+
+#############################################
+# Scrollback
+#############################################
+
+scrollback_lines 100000
+scrollback_pager_history_size 10
+#############################################
+# Mouse
+#############################################
+
+copy_on_select yes
+strip_trailing_spaces smart
+
+#############################################
+# Tabs
+#############################################
+
+tab_bar_style powerline
+tab_powerline_style slanted
+
+#############################################
+# Bell
+#############################################
+
+enable_audio_bell no
+visual_bell_duration 0
+
+#############################################
+# Clipboard
+#############################################
+
+clipboard_control write-clipboard write-primary
+
+#############################################
+# URL
+#############################################
+
+detect_urls yes
+
+#############################################
+# Shell
+#############################################
+
+shell /bin/bash
+
+########################
+# Appearance
+########################
+# background #0d1117
+# foreground #c9d1d9
+# selection_background #264f78
+# selection_foreground #ffffff
+# cursor #58a6ff
+
+background_opacity 0.65
+confirm_os_window_close 0
+
+font_family JetBrainsMono Nerd Font
+font_size 13
+
+window_padding_width 10
+hide_window_decorations yes
+mouse_hide_wait -0.5
+
+
+# BEGIN_KITTY_THEME
+# Catppuccin-Mocha
+include current-theme.conf
+# END_KITTY_THEME
+cursor_shape beam
+cursor_beam_thickness 1.8
+cursor_blink_interval 0.5
+shell_integration no-cursor
+cursor_stop_blinking_after 15.0

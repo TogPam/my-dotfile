@@ -1,0 +1,42 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "type": "kitty-direct",
+    "source": "~/Pictures/girl_fixed.png",
+    "height": 16,
+    "width": 15,
+    "preserveAspectRatio": false,
+    "padding":{
+	"top": 1,
+	"right": 0,
+        "left": 2
+    }
+  },
+  "display": {
+    "separator": "  "
+  },
+  "modules": [
+    "break",
+    { "type": "custom", "format": "┌──────────────────────────────────────────────────────────┐", "outputColor": "yellow" },
+    { "type": "os",           "key": "╭─  DISTRO ", "keyColor": "yellow" },
+    { "type": "packages",     "key": "├─ 󰏖 PACKAG ", "keyColor": "yellow" },
+    { "type": "shell",        "key": "╰─  SHELL  ", "keyColor": "yellow" },
+    "break",
+    { "type": "wm",           "key": "╭─  DE/WM  ", "keyColor": "blue" },
+    { "type": "terminal",     "key": "╰─  TERM   ", "keyColor": "blue" },
+    "break",
+    { "type": "host",         "key": "╭─ 󰌢 SYSTEM ", "keyColor": "green" },
+    { "type": "cpu",          "key": "├─ 󰻠 CPU    ", "keyColor": "green" },
+    { "type": "gpu",          "key": "├─ 󰻑 GPU    ", "keyColor": "green" },
+    { "type": "uptime",       "key": "╰─ 󰅐 UPTIME ", "keyColor": "green" },
+    "break",
+    { "type": "player",       "key": "├─ 󰥠 PLAYER ", "keyColor": "magenta" },
+    { "type": "media",        "key": "╰─ 󰝚 MEDIA  ", "keyColor": "magenta" },
+    { "type": "custom", "format": "└──────────────────────────────────────────────────────────┘", "outputColor": "magenta" },
+    {
+      "type": "custom",
+      "format": " \u001b[31m  \u001b[32m  \u001b[33m  \u001b[34m  \u001b[35m  \u001b[36m  \u001b[37m "
+    },
+    "break"
+  ]
+}
