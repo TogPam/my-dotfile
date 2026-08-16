@@ -1,0 +1,41 @@
+* {
+  all: unset;
+}
+
+.clock-event {
+  /* Nền trong suốt hoàn toàn */
+  background-color: transparent;
+  /* Loại bỏ viền và bóng đổ */
+  border: none;
+  box-shadow: none;
+  
+  /* Vẫn giữ transition nếu bạn muốn thêm hiệu ứng đổi màu chữ */
+  transition: all 0.3s ease;
+}
+
+/* Hiệu ứng khi rê chuột vào: chỉ thay đổi màu chữ thay vì thay đổi nền */
+.clock-event:hover .time {
+  color: #89b4fa; /* Màu xanh ngọc nhẹ khi hover */
+}
+
+.clock-box {
+  padding: 10px; /* Thu nhỏ padding cho gọn */
+}
+
+.time {
+  color: #ffffff;
+  font-family: "JetBrains Mono", "FiraCode Nerd Font", sans-serif;
+  font-size: 60px; /* Giảm size một chút để không bị chiếm chỗ */
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Giữ bóng chữ để vẫn đọc được trên nền */
+  transition: color 0.3s ease;
+}
+
+.date {
+  color: #bac2de;
+  font-family: "JetBrains Mono", "FiraCode Nerd Font", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: -5px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}

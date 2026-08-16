@@ -11,9 +11,13 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="agnoster"
 
 plugins=( 
+    sudo
     git
     zsh-autosuggestions
     zsh-syntax-highlighting
+    zsh-vi-mode
+    fzf
+    extract
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -60,3 +64,19 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Added by Antigravity CLI installer
 export PATH="/home/togpam/.local/bin:$PATH"
+
+# Add bindkey for plugin sudo
+bindkey '^S' sudo-command-line
+
+
+function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+        builtin cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+}
+
+# Tạo phím tắt Alt + O để mở nhanh Yazi
+bindkey -s '^o' 'y\n'
