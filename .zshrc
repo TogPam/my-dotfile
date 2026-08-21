@@ -2,10 +2,12 @@ export GLFW_IM_MODULE=none
 export XMODIFIERS="@im=fcitx"
 export GTK_IM_MODULE="fcitx"
 export QT_IM_MODULE="fcitx"
-
+export PATH="$HOME/.cargo/bin:$PATH"
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+# Tạo phím tắt Alt + O để mở nhanh Yazi
+bindkey -s '^o' 'y\n'
 export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="agnoster"
@@ -78,5 +80,6 @@ function y() {
     rm -f -- "$tmp"
 }
 
-# Tạo phím tắt Alt + O để mở nhanh Yazi
-bindkey -s '^o' 'y\n'
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
