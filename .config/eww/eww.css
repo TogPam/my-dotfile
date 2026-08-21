@@ -1,0 +1,6 @@
+* {
+  all: unset;
+}
+
+/* Import tất cả style con vào file gốc */
+@import url("./clock/clock.css");
