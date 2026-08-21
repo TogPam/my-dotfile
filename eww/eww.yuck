@@ -1,2 +1,0 @@
-;; Nối tất cả file yuck con vào file gốc
-(include "./clock/clock.yuck")
