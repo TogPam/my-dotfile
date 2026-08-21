@@ -1,0 +1,59 @@
+;; ==========================================
+;; BIẾN LƯU TRỮ JSON
+;; ==========================================
+(defvar notes_json "[]")
+(defvar note_input_text "") ;; Thêm biến này để quản lý ô nhập liệu
+
+;; ==========================================
+;; ICON FLOAT TRÊN DESKTOP 
+;; (Vẫn giữ là layer tĩnh để dính trên màn hình)
+;; ==========================================
+(defwindow note_icon
+  :monitor 0
+  :geometry (geometry :x "20px" :y "20px" :width "50px" :height "50px" :anchor "top right")
+  :stacking "bottom" 
+  :exclusive false
+  (button :class "note-icon-btn" :onclick "eww open --toggle note_board" "󰎞")
+)
+
+;; ==========================================
+;; BẢNG GHI CHÚ CHÍNH (NORMAL WINDOW)
+;; ==========================================
+;; Không dùng :monitor và :anchor nữa, Hyprland sẽ tự quản lý vị trí
+(defwindow note_board
+  :title "note_board" 
+  :monitor 0
+  :geometry (geometry :width "350px" :height "480px")
+  :windowtype "normal"
+  :wm-ignore false
+  :focusable true
+  (box :class "note-container" :orientation "v" :space-evenly false
+    
+    ;; Header
+    (box :class "note-header" :orientation "h" :space-evenly false
+      (label :class "note-title" :text "📝 Ghi chú" :halign "start" :hexpand true)
+      (button :class "note-close" :onclick "eww close note_board" :halign "end" "󰅖")
+    )
+    
+    ;; Danh sách Notes 
+    (scroll :class "note-scroll" :vscroll true :hscroll false :vexpand true
+      (box :orientation "v" :space-evenly false :spacing 12 :class "note-list"
+        (for note in notes_json
+          (box :class "note-item" :orientation "h" :space-evenly false
+            (label :class "note-text" :text "${note.text}" :wrap true :halign "start" :hexpand true)
+            (button :class "note-del-btn" :onclick "~/.config/eww/scripts/notes.sh delete '${note.id}'" "󰆴")
+          )
+        )
+      )
+    )
+
+    ;; Ô nhập liệu Note mới
+    (box :class "note-input-container" :orientation "h" :space-evenly false
+      (input :class "note-input"
+             :value note_input_text 
+             :onchange "eww update note_input_text='{}'"
+             :onaccept "~/.config/eww/scripts/notes.sh add '{}' && eww update note_input_text=''" 
+             :hexpand true)
+    )
+  )
+)
