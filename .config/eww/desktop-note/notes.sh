@@ -6,10 +6,10 @@ set -euo pipefail
 # CONFIG
 # =========================================================
 
-NOTES_DIR="$HOME/.config/eww/desktop-note/data"
+NOTES_DIR="$HOME/.config/eww/desktop-note"
 NOTES_FILE="$NOTES_DIR/notes.json"
+
 EWW="eww"
-EWW_WINDOW="note_board"
 
 
 # =========================================================
@@ -19,16 +19,17 @@ EWW_WINDOW="note_board"
 mkdir -p "$NOTES_DIR"
 
 if [[ ! -f "$NOTES_FILE" ]]; then
-    echo "[]" > "$NOTES_FILE"
+    printf '%s\n' '[]' > "$NOTES_FILE"
 fi
 
+# Nếu JSON lỗi thì reset về []
 if ! jq empty "$NOTES_FILE" >/dev/null 2>&1; then
-    echo "[]" > "$NOTES_FILE"
+    printf '%s\n' '[]' > "$NOTES_FILE"
 fi
 
 
 # =========================================================
-# HELPERS
+# LOAD JSON
 # =========================================================
 
 load_notes() {
@@ -36,20 +37,36 @@ load_notes() {
 }
 
 
-refresh_eww() {
-    true
+# =========================================================
+# SYNC JSON -> EWW
+# =========================================================
+
+sync_eww() {
+    local json
+
+    json="$(load_notes)"
+
+    "$EWW" update "notes_json=$json"
 }
 
 
+# =========================================================
+# GET EWW VARIABLE
+# =========================================================
+
 get_input() {
-    "$EWW" get note_input_text 2>/dev/null || true
+    "$EWW" get note_input_text 2>/dev/null || printf ''
 }
 
 
 get_edit_id() {
-    "$EWW" get note_edit_id 2>/dev/null || true
+    "$EWW" get note_edit_id 2>/dev/null || printf ''
 }
 
+
+# =========================================================
+# GENERATE ID
+# =========================================================
 
 generate_id() {
     printf '%s-%s' "$(date +%s%N)" "$RANDOM"
@@ -58,6 +75,8 @@ generate_id() {
 
 # =========================================================
 # LIST
+#
+# Chỉ dùng để lấy JSON, không poll.
 # =========================================================
 
 cmd_list() {
@@ -78,7 +97,7 @@ cmd_add() {
 
     # Không cho phép note rỗng
     if [[ -z "${text//[[:space:]]/}" ]]; then
-        exit 0
+        return 0
     fi
 
     id="$(generate_id)"
@@ -98,7 +117,9 @@ cmd_add() {
     mv "$tmp" "$NOTES_FILE"
 
     "$EWW" update note_input_text=""
-    refresh_eww
+    "$EWW" update note_edit_id=""
+
+    sync_eww
 }
 
 
@@ -115,11 +136,11 @@ cmd_update() {
     text="$(get_input)"
 
     if [[ -z "$id" ]]; then
-        return
+        return 0
     fi
 
     if [[ -z "${text//[[:space:]]/}" ]]; then
-        return
+        return 0
     fi
 
     tmp="$(mktemp)"
@@ -129,9 +150,11 @@ cmd_update() {
         --arg text "$text" \
         'map(
             if .id == $id
-            then .text = $text
-                 | .updated_at = (now | todateiso8601)
-            else .
+            then
+                .text = $text
+                | .updated_at = (now | todateiso8601)
+            else
+                .
             end
         )' \
         "$NOTES_FILE" > "$tmp"
@@ -141,14 +164,15 @@ cmd_update() {
     "$EWW" update note_input_text=""
     "$EWW" update note_edit_id=""
 
-    refresh_eww
+    sync_eww
 }
 
 
 # =========================================================
 # SAVE
 #
-# Chọn ADD hoặc UPDATE dựa trên note_edit_id
+# ADD nếu chưa edit
+# UPDATE nếu đang edit
 # =========================================================
 
 cmd_save() {
@@ -173,7 +197,7 @@ cmd_delete() {
     local tmp
 
     if [[ -z "$id" ]]; then
-        exit 1
+        return 1
     fi
 
     tmp="$(mktemp)"
@@ -185,7 +209,13 @@ cmd_delete() {
 
     mv "$tmp" "$NOTES_FILE"
 
-    refresh_eww
+    # Nếu đang sửa note vừa bị xoá
+    if [[ "$(get_edit_id)" == "$id" ]]; then
+        "$EWW" update note_input_text=""
+        "$EWW" update note_edit_id=""
+    fi
+
+    sync_eww
 }
 
 
@@ -194,12 +224,23 @@ cmd_delete() {
 # =========================================================
 
 cmd_clear() {
-    echo "[]" > "$NOTES_FILE"
+    printf '%s\n' '[]' > "$NOTES_FILE"
 
     "$EWW" update note_input_text=""
     "$EWW" update note_edit_id=""
 
-    refresh_eww
+    sync_eww
+}
+
+
+# =========================================================
+# INITIAL SYNC
+#
+# Được gọi một lần khi Desktop-Notes khởi động.
+# =========================================================
+
+cmd_init() {
+    sync_eww
 }
 
 
@@ -210,6 +251,10 @@ cmd_clear() {
 case "${1:-}" in
     list)
         cmd_list
+        ;;
+
+    init)
+        cmd_init
         ;;
 
     add)
@@ -226,7 +271,7 @@ case "${1:-}" in
 
     delete)
         if [[ $# -lt 2 ]]; then
-            echo "Usage: $0 delete <note-id>" >&2
+            echo "Usage: $0 delete <id>" >&2
             exit 1
         fi
 
@@ -239,6 +284,7 @@ case "${1:-}" in
 
     *)
         echo "Usage:"
+        echo "  $0 init"
         echo "  $0 list"
         echo "  $0 add"
         echo "  $0 update"

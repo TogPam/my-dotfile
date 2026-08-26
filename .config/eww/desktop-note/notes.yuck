@@ -5,21 +5,10 @@
 
 ;; Nội dung ô nhập
 (defvar note_input_text "")
-
+(defvar notes_json "[]")
 ;; ID note đang chỉnh sửa
 ;; "" = đang ở chế độ thêm mới
 (defvar note_edit_id "")
-
-
-;; =========================================================
-;; LOAD NOTES
-;; =========================================================
-
-(defpoll notes_json
-  :interval "10s"
-  "~/.config/eww/desktop-note/notes.sh list"
-)
-
 
 ;; =========================================================
 ;; ICON FLOAT TRÊN DESKTOP
@@ -37,6 +26,8 @@
   :stacking "bottom"
   :exclusive false
   :focusable false
+  :windowtype "utility"
+  :wm-ignore false
 
   (button
     :class "note-icon-btn"
@@ -44,7 +35,6 @@
     "󰎞"
   )
 )
-
 
 ;; =========================================================
 ;; NOTE BOARD
@@ -60,7 +50,7 @@
     :height "520px"
     :anchor "top right"
   )
-  :windowtype "normal"
+  :windowtype "utility"
   :wm-ignore false
   :focusable true
 
